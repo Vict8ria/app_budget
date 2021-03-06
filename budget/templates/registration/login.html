@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+{% block title %} Login page {% endblock %}
+
+{% block content %}
+    <div class="form">
+        <h2>User login</h2>
+
+        {% if form.errors %}
+            Error
+        {% else %}
+            <form action="." method="post">
+                {{ form.as_p }}
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{{ next }}">
+                <input type="submit" value="Login">
+                <input type="submit" value="Create an account">
+            </form>
+            <a href="{% url "password_reset" %}">Forgot Your Password?</a>
+        {% endif %}
+    </div>
+{% endblock %}

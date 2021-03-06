@@ -1,0 +1,51 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title%} | budget app {% endblock %}</title>
+    <link href="{% static "styles.css" %}" rel="stylesheet">
+</head>
+
+<body>
+
+<header>
+    {% if request.user.is_authenticated %}
+        Hi {{ request.user.first_name }}!
+        <a href="{% url "lesson:logout" %}">Logout</a>
+        <a href="{% url "lesson:profile" %}">Profile</a>
+    {% else %}
+        <a href="{% url "lesson:login" %}">Login</a>
+        <a href="{% url "lesson:register" %}">Login</a>
+    {% endif %}
+</header>
+
+<div class="container-flex m-4">
+    <div class="row mb-1">
+        <div class="col-sm-3 px-sm-0 px-sm-0 pl-sm-1">
+            <div class="p-3 border border-primary rounded">
+                {% block menu%}{% endblock %}
+            </div>
+
+        </div>
+        <div class="col-9 px-sm-0 px-sm-0 pl-sm-1 ">
+            <div class="p-3 border border-primary rounded">
+                {% block content%}{% endblock %}
+            </div>
+
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-3 border border-primary rounded">
+            Python Web Development
+        </div>
+        <div class="col-9 border border-primary rounded">
+            Maxim Belov
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

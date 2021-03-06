@@ -1,0 +1,18 @@
+{% extends "layout.html" %}
+{% block title %} Register user {% endblock %}
+
+{% block content %}
+    <div class="form">
+        <h2>Create an account</h2>
+
+        {% if form.errors %}
+            Error
+        {% else %}
+            <form action="." method="post">
+                {{ form.as_p }}
+                {% csrf_token %}
+                <input type="submit" value="Create an account">
+            </form>
+        {% endif %}
+    </div>
+{% endblock %}
