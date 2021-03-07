@@ -8,6 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from datetime import date
+from django.core.mail import send_mail
 
 from . import forms
 from . import models
@@ -65,6 +66,30 @@ def register(request):
     else:
         form = forms.RegistrationForm()
         return render(request, 'registration/registration.html', {'form': form})
+
+
+def contact_us(request):
+    sent = False
+
+    if request.method == "POST":
+        form = forms.ContactUsForm(request.POST)
+        if form.is_valid():
+            cd = form.cleaned_data
+            subject = "Budget app: Contact us"
+            body = {
+                'first_name': cd['name'],
+                'email': cd['email'],
+                'phone': cd['phone'].as_e164,
+                'message': cd['message'],
+            }
+            message = "\n".join(body.values())
+            from_email = body["email"]
+            send_mail(subject, message, from_email, ['vict8ria.k@gmail.com'])
+            sent = True
+    else:
+        form = forms.ContactUsForm()
+
+    return render(request, 'contact_us/contact_us.html', {'form': form, 'sent': sent})
 
 
 @login_required

@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
+from phonenumber_field.formfields import PhoneNumberField
 from . import models
 
 
@@ -21,6 +22,13 @@ class RegistrationForm(forms.ModelForm):
         if cd['password'] != cd['password_confirm']:
             raise forms.ValidationError('Password don\'t match')
         return cd['password']
+
+
+class ContactUsForm(forms.Form):
+    name = forms.CharField(required=True)
+    email = forms.EmailField(required=True)
+    phone = PhoneNumberField(required=True, widget=forms.TextInput())
+    message = forms.CharField(widget=forms.Textarea, max_length=2000)
 
 
 class CreateProjectForm(forms.ModelForm):

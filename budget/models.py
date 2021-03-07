@@ -8,6 +8,9 @@ from django.urls import reverse
 class Profile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.user
+
 
 class Project(models.Model):
     name = models.CharField(max_length=100)
