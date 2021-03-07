@@ -13,7 +13,7 @@
                 {% csrf_token %}
                 <input type="hidden" name="next" value="{{ next }}">
                 <input type="submit" value="Login">
-                <input type="submit" value="Create an account">
+                <a href="{% url "register" %}">Create an account</a>
             </form>
             <a href="{% url "password_reset" %}">Forgot Your Password?</a>
         {% endif %}

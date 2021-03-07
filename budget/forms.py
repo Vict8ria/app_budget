@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
+from . import models
 
 
 class LoginForm(forms.Form):
@@ -20,3 +21,15 @@ class RegistrationForm(forms.ModelForm):
         if cd['password'] != cd['password_confirm']:
             raise forms.ValidationError('Password don\'t match')
         return cd['password']
+
+
+class CreateProjectForm(forms.ModelForm):
+    class Meta:
+        model = models.Project
+        fields = ('name', )
+
+
+class EditProjectForm(forms.ModelForm):
+    class Meta:
+        model = models.Project
+        fields = ('name', )

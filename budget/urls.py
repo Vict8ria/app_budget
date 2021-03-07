@@ -5,7 +5,13 @@ from . import views
 
 urlpatterns = [
     path('', views.landing, name='landing'),
-    path('dashboard/', views.dashboard, name='dashboard'),
+
+    # project
+    path('create/', views.create_project, name='create_project'),
+    path('projects/', views.all_projects, name='all_projects'),
+    path('projects/<int:project_id>/', views.detailed_project, name='detailed_project'),
+    path('projects/<int:project_id>/remove', views.remove_project, name='remove_project'),
+    path('projects/<int:project_id>/edit', views.edit_project, name='edit_project'),
 
     # login, logout
     path('login/', auth_views.LoginView.as_view(), name='login'),
