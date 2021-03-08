@@ -6,12 +6,16 @@ from . import views
 urlpatterns = [
     path('', views.landing, name='main'),
 
-    # project
+    # projects
     path('projects/', views.all_projects, name='all_projects'),
     path('projects/create/', views.create_project, name='create_project'),
     path('projects/<int:project_id>/', views.detailed_project, name='detailed_project'),
     path('projects/<int:project_id>/remove', views.remove_project, name='remove_project'),
     path('projects/<int:project_id>/edit', views.edit_project, name='edit_project'),
+
+    # transactions
+    path('projects/<int:project_id>/transactions/', views.add_transaction, name='add_transaction'),
+    path('projects/<int:project_id>/<int:transaction_id>/edit', views.edit_transactions, name='edit_transactions'),
 
     # login, logout
     path('login/', auth_views.LoginView.as_view(), name='login'),

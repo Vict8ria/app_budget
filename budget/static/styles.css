@@ -81,3 +81,18 @@ td {
 .logo {
     border: none;
 }
+
+.table .table-tr {
+    display: flex;
+}
+
+.table .table-tr div {
+    flex: 1 0 0;
+}
+
+.table .table-tr div input {
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid grey;
+    display: block;
+}

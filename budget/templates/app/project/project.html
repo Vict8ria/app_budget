@@ -9,4 +9,8 @@
     </div>
 
     <h2>Project {{ project.name }}</h2>
+
+    Report: {{ report }}
+    {% include "app/transaction/edit_transactions.html" with project=project %}
+    {% include "app/transaction/add_transaction.html" with project=project form=transaction_form %}
 {% endblock %}

@@ -1,7 +1,6 @@
 from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.urls import reverse
 
 
 # Create your models here.
@@ -16,14 +15,23 @@ class Project(models.Model):
     name = models.CharField(max_length=100)
     updated_at = models.DateTimeField(auto_now=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(
+    owner = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='user_project'
+        related_name='projects'
     )
 
     def __str__(self):
         return self.name
 
-    # def get_absolute_url(self):
-    #     return reverse('project', args=[self.id])
+
+class Transaction(models.Model):
+    date = models.DateField()
+    comment = models.CharField(max_length=200)
+    amount = models.CharField(max_length=10)
+    transaction_type = models.CharField(max_length=70)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='transactions', unique=False)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='transactions', unique=False)
+
+    def __str__(self):
+        return self.amount

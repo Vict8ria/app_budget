@@ -41,3 +41,16 @@ class EditProjectForm(forms.ModelForm):
     class Meta:
         model = models.Project
         fields = ('name', )
+
+
+class DateInput(forms.DateInput):
+    input_type = 'date'
+
+
+class TransactionForm(forms.ModelForm):
+    class Meta:
+        model = models.Transaction
+        fields = ('date', 'amount', 'comment', 'transaction_type', )
+        widgets = {
+            'date': DateInput()
+        }

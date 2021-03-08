@@ -1,0 +1,29 @@
+{% if transactions %}
+    <div class="table">
+        <div class="table-tr">
+            <div>Date</div>
+            <div>Amount</div>
+            <div>Comment</div>
+            <div>Type</div>
+            <div>Actions</div>
+        </div>
+        {% for transaction in transactions %}
+            <form action="{% url "edit_transactions" project.id transaction.id %}" method="post">
+                <div class="table-tr">
+                    <div><input type="date" name="date" value="{{ transaction.date|date:"Y-m-d" }}"></div>
+                    <div><input type="text" name="amount" value="{{ transaction.amount }}"></div>
+                    <div><input type="text" name="comment" value="{{ transaction.comment }}"></div>
+                    <div><input type="text" name="transaction_type" value="{{ transaction.transaction_type }}"></div>
+                    {% csrf_token %}
+                    <div class="actions">
+                        <input type="submit" name="save" value="Save">
+                        <input type="submit" name="remove" value="Remove">
+                    </div>
+                </div>
+            </form>
+        {% endfor %}
+    </div>
+    {% csrf_token %}
+{% else %}
+    No transactions
+{% endif %}
