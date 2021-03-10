@@ -7,7 +7,7 @@ from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
-from datetime import date
+from datetime import date, datetime
 from django.core.mail import send_mail
 from django.db.models import Sum
 from django.db.models.functions import TruncMonth, Cast, Substr
@@ -103,16 +103,29 @@ def all_projects(request):
 
 
 @login_required
-def detailed_project(request, project_id):
+def detailed_project(request, project_id, year="", month=""):
     project = get_object_or_404(models.Project, id=project_id)
-    transactions = models.Transaction.objects.all()
-    current_date = date.today().strftime('%Y-%m')
+    transactions = models.Transaction.objects.filter(
+        project=project,
+        owner=request.user,
+    )
+    if year:
+        transactions = transactions.filter(date__year=year)
+    if month:
+        transactions = transactions.filter(date__month=month)
 
     report = models.Transaction.objects.annotate(
         month=Substr(Cast(TruncMonth('date', output_field=DateField()), output_field=CharField()), 1, 7)
     ).values('month').annotate(amount=Sum('amount'))
 
     transaction_form = forms.TransactionForm()
+
+    if year and month:
+        selected_date = datetime.strptime(f"{year}-{month}", '%Y-%m')
+        month_form = forms.MonthsForm()
+        month_form.fields['select'].initial = selected_date
+    else:
+        month_form = forms.MonthsForm()
 
     return render(
         request,
@@ -121,7 +134,8 @@ def detailed_project(request, project_id):
             "project": project,
             "transactions": transactions,
             "report": list(report),
-            "transaction_form": transaction_form
+            "transaction_form": transaction_form,
+            "choose_month_form": month_form,
         }
     )
 
@@ -198,3 +212,17 @@ def edit_transactions(request, project_id, transaction_id):
             transaction_form.save()
 
     return redirect(reverse("detailed_project", args=[project.id]))
+
+
+def choose_month_project(request, project_id):
+    if request.method != "POST":
+        return HttpResponse("Bad Request")
+
+    project = models.Project.objects.get(id=project_id)
+    if request.user == project.owner:
+        form = forms.MonthsForm(request.POST)
+        if form.is_valid():
+            selected_date = form.cleaned_data['select']
+            converted_date = datetime.strptime(selected_date, '%Y-%m-%d %H:%M:%S')
+            year, month = converted_date.strftime("%Y"), int(converted_date.strftime("%m"))
+            return redirect(reverse("detailed_project", args=[project.id, year, month]))

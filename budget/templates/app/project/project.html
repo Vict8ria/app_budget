@@ -10,6 +10,11 @@
 
     <h2>Project {{ project.name }}</h2>
 
+    <form action="{% url "choose_month_project" project.id %}" method="post">
+        {{ choose_month_form.as_p }}
+        {% csrf_token %}
+    </form>
+
     Report: {{ report }}
     {% include "app/transaction/edit_transactions.html" with project=project %}
     {% include "app/transaction/add_transaction.html" with project=project form=transaction_form %}

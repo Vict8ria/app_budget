@@ -2,6 +2,8 @@ from django import forms
 from django.contrib.auth.models import User
 from phonenumber_field.formfields import PhoneNumberField
 from . import models
+from . import utils
+from . import constants
 
 
 class LoginForm(forms.Form):
@@ -34,13 +36,13 @@ class ContactUsForm(forms.Form):
 class CreateProjectForm(forms.ModelForm):
     class Meta:
         model = models.Project
-        fields = ('name', )
+        fields = ('name',)
 
 
 class EditProjectForm(forms.ModelForm):
     class Meta:
         model = models.Project
-        fields = ('name', )
+        fields = ('name',)
 
 
 class DateInput(forms.DateInput):
@@ -50,7 +52,17 @@ class DateInput(forms.DateInput):
 class TransactionForm(forms.ModelForm):
     class Meta:
         model = models.Transaction
-        fields = ('date', 'amount', 'comment', 'transaction_type', )
+        fields = ('date', 'amount', 'comment', 'transaction_type',)
         widgets = {
             'date': DateInput()
         }
+
+
+class MonthsForm(forms.Form):
+    months_list = utils.get_months(constants.LAST_MONTHS_COUNT)
+    CHOICES = [(month, month.strftime("%B %Y"),) for month in months_list]
+    select = forms.ChoiceField(
+        choices=tuple(CHOICES),
+        widget=forms.Select(attrs={"onchange": 'this.form.submit();'}),
+        label='Select month'
+    )
