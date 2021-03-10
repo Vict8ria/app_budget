@@ -54,15 +54,16 @@ class TransactionForm(forms.ModelForm):
         model = models.Transaction
         fields = ('date', 'amount', 'comment', 'transaction_type',)
         widgets = {
-            'date': DateInput()
+            'date': DateInput(),
+            'transaction_type': forms.Select(choices=constants.TRANSACTION_TYPES)
         }
 
 
 class MonthsForm(forms.Form):
     months_list = utils.get_months(constants.LAST_MONTHS_COUNT)
-    CHOICES = [(month, month.strftime("%B %Y"),) for month in months_list]
+    choices = [(month, month.strftime("%B %Y"),) for month in months_list]
     select = forms.ChoiceField(
-        choices=tuple(CHOICES),
+        choices=tuple(choices),
         widget=forms.Select(attrs={"onchange": 'this.form.submit();'}),
         label='Select month'
     )

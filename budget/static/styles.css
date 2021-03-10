@@ -96,3 +96,12 @@ td {
     border: 1px solid grey;
     display: block;
 }
+
+.project-items {
+    display: flex;
+}
+
+.project-left,
+.project-right  {
+    flex: 1;
+}

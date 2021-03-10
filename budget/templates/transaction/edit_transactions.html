@@ -9,11 +9,31 @@
         </div>
         {% for transaction in transactions %}
             <form action="{% url "edit_transactions" project.id transaction.id %}" method="post">
+{#                {% if transaction.errors %}#}
+{#                    <ol>#}
+{#                    {% for error in transaction.errors %}#}
+{#                        <li><strong>{{ error|escape }}</strong></li>#}
+{#                    {% endfor %}#}
+{#                    </ol>#}
+{#                {% endif %}#}
                 <div class="table-tr">
                     <div><input type="date" name="date" value="{{ transaction.date|date:"Y-m-d" }}"></div>
                     <div><input type="text" name="amount" value="{{ transaction.amount }}"></div>
                     <div><input type="text" name="comment" value="{{ transaction.comment }}"></div>
-                    <div><input type="text" name="transaction_type" value="{{ transaction.transaction_type }}"></div>
+                    <div>
+                        <select name="transaction_type">
+                            {% for value, type in transaction_types %}
+                                <option
+                                    value="{{ value }}"
+                                    {% if value == transaction.transaction_type %} selected {% endif %}
+                                >
+                                    {{ type }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div><input type="hidden" name="selected_year" value="{{ year }}"></div>
+                    <div><input type="hidden" name="selected_month" value="{{ month }}"></div>
                     {% csrf_token %}
                     <div class="actions">
                         <input type="submit" name="save" value="Save">

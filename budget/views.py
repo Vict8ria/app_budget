@@ -10,20 +10,18 @@ from django.urls import reverse
 from datetime import date, datetime
 from django.core.mail import send_mail
 from django.db.models import Sum
-from django.db.models.functions import TruncMonth, Cast, Substr
-from django.db.models import DateField, CharField
+from django.db.models.functions import TruncMonth
+from django.db.models import DateField
+from django.db.models import Count
 
 from . import forms
 from . import models
+from . import constants
 
 
 # Create your views here.
 def landing(request):
     return render(request, "landing/index.html")
-
-
-# def dashboard(request):
-#     return render(request, "app/dashboard.html")
 
 
 def user_login(request):
@@ -51,7 +49,7 @@ def user_login(request):
 
 @login_required
 def profile(request):
-    return render(request, 'app/profile.html', {'user': request.user})
+    return render(request, 'registration/profile.html', {'user': request.user})
 
 
 def register(request):
@@ -99,43 +97,51 @@ def contact_us(request):
 def all_projects(request):
     today = date.today()
     projects = models.Project.objects.filter(owner=request.user)
-    return render(request, "app/project/projects.html", {"projects": projects, "today": today})
+    return render(request, "project/projects.html", {"projects": projects, "today": today})
 
 
 @login_required
-def detailed_project(request, project_id, year="", month=""):
+def detailed_project(request, project_id, year=date.today().year, month=date.today().month):
     project = get_object_or_404(models.Project, id=project_id)
     transactions = models.Transaction.objects.filter(
         project=project,
         owner=request.user,
+        date__year=year,
+        date__month=month,
     )
-    if year:
-        transactions = transactions.filter(date__year=year)
-    if month:
-        transactions = transactions.filter(date__month=month)
 
-    report = models.Transaction.objects.annotate(
-        month=Substr(Cast(TruncMonth('date', output_field=DateField()), output_field=CharField()), 1, 7)
-    ).values('month').annotate(amount=Sum('amount'))
+    report = models.Transaction.objects \
+        .annotate(month=TruncMonth('date', output_field=DateField())) \
+        .values('month') \
+        .annotate(amount=Sum('amount'))\
+        .filter(date__year=year, date__month=month)
+
+    report_types = models.Transaction.objects \
+        .annotate(month=TruncMonth('date', output_field=DateField())) \
+        .values('month', 'transaction_type') \
+        .annotate(amount=Sum('amount'))\
+        .annotate(dcount=Count('transaction_type'))\
+        .filter(date__year=year, date__month=month)
 
     transaction_form = forms.TransactionForm()
 
-    if year and month:
-        selected_date = datetime.strptime(f"{year}-{month}", '%Y-%m')
-        month_form = forms.MonthsForm()
-        month_form.fields['select'].initial = selected_date
-    else:
-        month_form = forms.MonthsForm()
+    month_form = forms.MonthsForm()
+    selected_date = datetime.strptime(f"{year}-{month}", '%Y-%m')
+    month_form.fields['select'].initial = selected_date
 
     return render(
         request,
-        "app/project/project.html",
+        "project/project.html",
         {
             "project": project,
             "transactions": transactions,
-            "report": list(report),
+            "transaction_types": constants.TRANSACTION_TYPES,
+            "report": report[0] if report else '',
+            "report_types": report_types if report_types else '',
             "transaction_form": transaction_form,
             "choose_month_form": month_form,
+            "year": year,
+            "month": month,
         }
     )
 
@@ -153,7 +159,7 @@ def create_project(request):
             return HttpResponse("Data is not valid")
     else:
         project_form = forms.CreateProjectForm()
-        return render(request, 'app/project/create_project.html', {'form': project_form})
+        return render(request, 'project/create_project.html', {'form': project_form})
 
 
 @login_required
@@ -175,28 +181,32 @@ def edit_project(request, project_id):
             return redirect('all_projects')
     else:
         project_form = forms.EditProjectForm(instance=project)
-        return render(request, 'app/project/edit_project.html', {'form': project_form})
+        return render(request, 'project/edit_project.html', {'form': project_form})
 
 
 def add_transaction(request, project_id):
-    if request.method == "POST":
-        project = models.Project.objects.get(id=project_id)
-        transaction_form = forms.TransactionForm(request.POST)
-
-        if transaction_form.is_valid():
-            new_transaction = transaction_form.save(commit=False)
-            new_transaction.owner = request.user
-            new_transaction.project = project
-            new_transaction.save()
-
-            return redirect(reverse("detailed_project", args=[project.id]))
-    else:
+    if request.method != "POST":
         return HttpResponse("Bad Request")
+
+    project = models.Project.objects.get(id=project_id)
+    transaction_form = forms.TransactionForm(request.POST)
+
+    if transaction_form.is_valid():
+        new_transaction = transaction_form.save(commit=False)
+        new_transaction.owner = request.user
+        new_transaction.project = project
+        new_transaction.save()
+
+    return redirect(reverse("detailed_project", args=[project.id]))
 
 
 def edit_transactions(request, project_id, transaction_id):
+
     if request.method != "POST":
         return HttpResponse("Bad Request")
+
+    year = request.POST.get("selected_year", "")
+    month = request.POST.get("selected_month", "")
 
     project = models.Project.objects.get(id=project_id)
 
@@ -207,11 +217,15 @@ def edit_transactions(request, project_id, transaction_id):
     elif 'save' in request.POST:
         transaction_form = forms.TransactionForm(request.POST)
         if transaction_form.is_valid():
+            select = transaction_form.cleaned_data
+            print(select)
             transaction = models.Transaction.objects.get(id=transaction_id)
             transaction_form = forms.TransactionForm(request.POST, instance=transaction)
             transaction_form.save()
+        else:
+            print(transaction_form.errors)
 
-    return redirect(reverse("detailed_project", args=[project.id]))
+    return redirect(reverse("detailed_project", args=[project.id, year, month]))
 
 
 def choose_month_project(request, project_id):

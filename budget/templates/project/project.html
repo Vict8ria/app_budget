@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+{% block title %} Project {% endblock %}
+
+{% block content %}
+    <div class="breadcrumbs">
+        <a href="{% url "all_projects" %}">Projects</a>
+        -
+        <span>{{ project.name }}</span>
+    </div>
+
+    <h2>Project {{ project.name }}</h2>
+
+    <div class="project-items">
+        <div class="project-left">
+            <form action="{% url "choose_month_project" project.id %}" method="post">
+                {{ choose_month_form.as_p }}
+                {% csrf_token %}
+            </form>
+
+            {% include "transaction/edit_transactions.html" with project=project transaction_types=transaction_types %}
+            {% include "transaction/add_transaction.html" with project=project form=transaction_form %}
+        </div>
+        <div class="project-right">
+            Report: {{ report.amount }}
+            {% for type in report_types %}
+                <p>{{ type.transaction_type }}</p>
+                <p>{{ type.amount }}</p>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
