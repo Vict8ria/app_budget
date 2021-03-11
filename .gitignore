@@ -118,4 +118,4 @@ dmypy.json
 .idea/
 
 #sqlite
-*.sqlite3
+#*.sqlite3
