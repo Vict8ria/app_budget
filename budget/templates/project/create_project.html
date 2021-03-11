@@ -1,19 +1,31 @@
-{% extends "layout.html" %}
+{% extends "base.html" %}
 {% block title %} Create project {% endblock %}
 
 {% block content %}
-    <div class="breadcrumbs">
-        <a href="{% url "all_projects" %}">Projects</a>
-        -
-        <span>Create project</span>
+    <div class="container-fluid">
+        <div class="breadcrumbs">
+            <a href="{% url "all_projects" %}">Projects</a>
+            -
+            <span>Create project</span>
+        </div>
+        <div class="row">
+            <div class="col push-l4 l4">
+                <h4 class="center mb-5">Create new project:</h4>
+
+                {% if form.errors %}
+                    {% for error in form.errors %}
+                        <p>{{ error }}</p>
+                    {% endfor %}
+                {% else %}
+                    <form action="." method="post">
+                        {{ form.as_p }}
+                        {% csrf_token %}
+                        <div class="d-flex justify-center">
+                            <input class="cyan lighten-2 btn" type="submit" value="Create">
+                        </div>
+                    </form>
+                {% endif %}
+            </div>
+        </div>
     </div>
-
-    <h2>Create new project:</h2>
-
-    <form action="." method="post">
-        {{ form.as_p }}
-        {% csrf_token %}
-        <input type="submit" value="Create">
-    </form>
-
 {% endblock %}

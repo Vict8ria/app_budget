@@ -1,21 +1,25 @@
-{% extends "layout.html" %}
+{% extends "base.html" %}
 {% block title %} Login page {% endblock %}
 
 {% block content %}
-    <div class="form">
-        <h2>User login</h2>
+    <div class="landing">
+        <div class="container">
+            <div class="row">
+                <div class="col push-l4 l4">
+                <h4 class="center mb-5">User login</h4>
 
-        {% if form.errors %}
-            Error
-        {% else %}
-            <form action="." method="post">
-                {{ form.as_p }}
-                {% csrf_token %}
-                <input type="hidden" name="next" value="{{ next }}">
-                <input type="submit" value="Login">
-                <a href="{% url "register" %}">Create an account</a>
-            </form>
-            <a href="{% url "password_reset" %}">Forgot Your Password?</a>
-        {% endif %}
+                <form action="." method="post">
+                    {{ form.as_p }}
+                    {% csrf_token %}
+                    <input type="hidden" name="next" value="{{ next }}">
+                    <div class="d-flex justify-between">
+                        <input class="cyan lighten-2 btn" type="submit" value="Login">
+                        <a class="cyan lighten-2 btn" href="{% url "register" %}">Create an account</a>
+                    </div>
+                </form>
+                <a class="link mt-5" href="{% url "password_reset" %}">Forgot Your Password?</a>
+            </div>
+            </div>
+        </div>
     </div>
 {% endblock %}

@@ -1,9 +1,15 @@
-{% extends "layout.html" %}
+{% extends "base.html" %}
 {% block title %} Person profile {% endblock %}
 
 {% block content %}
-    <h2>Profile</h2>
-    <p>Login: {{ user.username }}</p>
-    <p>Name: {{ user.first_name | add:user.last_name }}</p>
-    <p>Email: {{ user.email }}</p>
+    <div class="container-fluid">
+        <div class="breadcrumbs">
+            <span>Profile</span>
+        </div>
+
+        <h4 class="mb-5">Profile</h4>
+        <p>Login: {{ user.username }}</p>
+        <p>Name: {{ user.first_name | add:user.last_name }}</p>
+        <p>Email: {{ user.email }}</p>
+    </div>
 {% endblock %}

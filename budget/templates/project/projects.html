@@ -1,47 +1,48 @@
-{% extends "layout.html" %}
+{% extends "base.html" %}
 {% block title %} Projects {% endblock %}
 
 {% block content %}
-    <div class="breadcrumbs">
-        <span>Projects</span>
-    </div>
+    <div class="container-fluid">
+        <div class="breadcrumbs">
+            <span>Projects</span>
+        </div>
 
-    <div class="form">
-        <h2>Projects</h2>
+        <div class="form">
+            <h4>Projects</h4>
 
-        <a href="{% url "create_project" %}">Create project</a>
+            <a class="cyan lighten-2 btn mt-5 mb-5" href="{% url "create_project" %}">Create project</a>
 
-        {% if projects %}
-            <table>
-            <tr>
-                <th>Name</th>
-                <th>Last changed</th>
-                <th>Actions</th>
-            </tr>
-            {% for project in projects %}
+            {% if projects %}
+                <table>
                 <tr>
-                    <td>
-                        <a href="{% url "detailed_project" project.id %}">{{ project.name }}</a>
-                    </td>
-                    <td>
-                        {% if project.updated_at|date:"Y-m-d" == today|date:"Y-m-d" %}
-                            {{ project.updated_at|date:"f A" }}
-                        {% else %}
-                            {{ project.updated_at|date:"N j, Y " }}
-                        {% endif %}
-                    </td>
-                    <td>
-                        <div class="actions">
-                            <a href="{% url "edit_project" project.id %}">Edit</a>
-                            <a href="{% url "remove_project" project.id %}">Remove</a>
-                            <button>View</button>
-                        </div>
-                    </td>
+                    <th>Name</th>
+                    <th>Last changed</th>
+                    <th>Actions</th>
                 </tr>
-            {% endfor %}
-        </table>
-        {% else %}
-            <p>No projects</p>
-        {% endif %}
+                {% for project in projects %}
+                    <tr>
+                        <td>
+                            <a class="link" href="{% url "detailed_project" project.id %}">{{ project.name }}</a>
+                        </td>
+                        <td>
+                            {% if project.updated_at|date:"Y-m-d" == today|date:"Y-m-d" %}
+                                {{ project.updated_at|date:"f A" }}
+                            {% else %}
+                                {{ project.updated_at|date:"N j, Y " }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="actions">
+                                <a class="link" href="{% url "edit_project" project.id %}">Edit</a>
+                                <a class="link" href="{% url "remove_project" project.id %}">Remove</a>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+            {% else %}
+                <p>No projects</p>
+            {% endif %}
+        </div>
     </div>
 {% endblock %}

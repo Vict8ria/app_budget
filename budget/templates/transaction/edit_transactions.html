@@ -1,43 +1,49 @@
 {% if transactions %}
-    <div class="table">
-        <div class="table-tr">
+    <div class="table-list">
+        <div class="table-list-header">
             <div>Date</div>
             <div>Amount</div>
             <div>Comment</div>
-            <div>Type</div>
+            <div>Payment type</div>
             <div>Actions</div>
         </div>
         {% for transaction in transactions %}
             <form action="{% url "edit_transactions" project.id transaction.id %}" method="post">
-{#                {% if transaction.errors %}#}
-{#                    <ol>#}
-{#                    {% for error in transaction.errors %}#}
-{#                        <li><strong>{{ error|escape }}</strong></li>#}
-{#                    {% endfor %}#}
-{#                    </ol>#}
-{#                {% endif %}#}
-                <div class="table-tr">
-                    <div><input type="date" name="date" value="{{ transaction.date|date:"Y-m-d" }}"></div>
-                    <div><input type="text" name="amount" value="{{ transaction.amount }}"></div>
-                    <div><input type="text" name="comment" value="{{ transaction.comment }}"></div>
-                    <div>
-                        <select name="transaction_type">
-                            {% for value, type in transaction_types %}
-                                <option
-                                    value="{{ value }}"
-                                    {% if value == transaction.transaction_type %} selected {% endif %}
-                                >
-                                    {{ type }}
-                                </option>
-                            {% endfor %}
-                        </select>
+                {% csrf_token %}
+                <input type="hidden" name="selected_year" value="{{ year }}">
+                <input type="hidden" name="selected_month" value="{{ month }}">
+                <div class="table-list-form">
+                    <div class="table-list-form-item">
+                        <label>
+                            <input type="date" name="date" value="{{ transaction.date|date:"Y-m-d" }}">
+                        </label>
                     </div>
-                    <div><input type="hidden" name="selected_year" value="{{ year }}"></div>
-                    <div><input type="hidden" name="selected_month" value="{{ month }}"></div>
-                    {% csrf_token %}
-                    <div class="actions">
-                        <input type="submit" name="save" value="Save">
-                        <input type="submit" name="remove" value="Remove">
+                    <div class="table-list-form-item">
+                        <label>
+                            <input type="text" name="amount" value="{{ transaction.amount }}">
+                        </label>
+                    </div>
+                    <div class="table-list-form-item">
+                        <label>
+                            <input type="text" name="comment" value="{{ transaction.comment }}">
+                        </label>
+                    </div>
+                    <div class="table-list-form-item">
+                        <label>
+                            <select name="transaction_type">
+                                {% for value, type in transaction_types %}
+                                    {% if value == transaction.transaction_type %}
+                                        <option value="{{ value }}" selected>{{ type }}</option>
+                                    {% else %}
+                                        <option value="{{ value }}">{{ type }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </label>
+                    </div>
+                    <div class="table-list-form-item">
+                        <input class="cyan lighten-2 btn" name="save" type="submit" value="Save">
+                        <input class="cyan lighten-2 btn" name="remove" type="submit" value="Remove">
                     </div>
                 </div>
             </form>
@@ -45,5 +51,5 @@
     </div>
     {% csrf_token %}
 {% else %}
-    No transactions
+    No payments
 {% endif %}

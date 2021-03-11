@@ -1,19 +1,25 @@
-{% extends "layout.html" %}
+{% extends "base.html" %}
 {% block title %} Edit project {% endblock %}
 
 {% block content %}
-    <div class="breadcrumbs">
-        <a href="{% url "all_projects" %}">Projects</a>
-        -
-        <span>Edit project</span>
+    <div class="container-fluid">
+        <div class="breadcrumbs">
+            <a href="{% url "all_projects" %}">Projects</a>
+            -
+            <span>Edit project</span>
+        </div>
+        <div class="row">
+            <div class="col push-l4 l4">
+                <h4 class="center mb-5">Edit project:</h4>
+
+                <form action="." method="post">
+                    {{ form.as_p }}
+                    {% csrf_token %}
+                    <div class="d-flex justify-center">
+                        <input class="cyan lighten-2 btn" type="submit" value="Edit">
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
-
-    <h2>Edit project:</h2>
-
-    <form action=".." method="post">
-        {{ form.as_p }}
-        {% csrf_token %}
-        <input type="submit" value="Edit">
-    </form>
-
 {% endblock %}

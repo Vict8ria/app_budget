@@ -1,5 +1,9 @@
-<form action="{% url "add_transaction" project.id %}" method="post">
+<form class="add-transaction-form" action="{% url "add_transaction" project.id %}" method="post">
     {{ form.as_p }}
     {% csrf_token %}
-    <input type="submit" value="Add">
+    <div class="actions">
+        <input class="cyan lighten-2 btn" type="submit" value="Add">
+    </div>
+    <input type="hidden" name="selected_year" value="{{ year }}">
+    <input type="hidden" name="selected_month" value="{{ month }}">
 </form>

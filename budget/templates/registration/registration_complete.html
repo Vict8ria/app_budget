@@ -1,8 +1,15 @@
-{% extends "layout.html" %}
-{% block title %} Register complete {% endblock %}
+{% extends "base.html" %}
+{% block title %} Registration complete {% endblock %}
 
 {% block content %}
-    <div class="form">
-        <p>You've been successfully registered. You can login <a href="{% url "login" %}">Login</a></p>
+    <div class="landing">
+        <div class="container">
+            <div class="row">
+                <div class="col push-l3 l6">
+                <h4 class="center mb-5">Registration complete</h4>
+                <p class="center">You've been successfully registered. You can login <a href="{% url "login" %}">Login</a>.</p>
+            </div>
+            </div>
+        </div>
     </div>
 {% endblock %}

@@ -1,18 +1,22 @@
-{% extends "layout.html" %}
-{% block title %} Register user {% endblock %}
+{% extends "base.html" %}
+{% block title %} Create an account {% endblock %}
 
 {% block content %}
-    <div class="form">
-        <h2>Create an account</h2>
+    <div class="landing">
+        <div class="container">
+            <div class="row">
+                <div class="col push-l4 l4">
+                <h4 class="center mb-5">Create an account</h4>
 
-        {% if form.errors %}
-            Error
-        {% else %}
-            <form action="." method="post">
-                {{ form.as_p }}
-                {% csrf_token %}
-                <input type="submit" value="Create an account">
-            </form>
-        {% endif %}
+                <form action="." method="post">
+                    {{ form.as_p }}
+                    {% csrf_token %}
+                    <div class="d-flex justify-center">
+                        <input class="cyan lighten-2 btn" type="submit" value="Create an account">
+                    </div>
+                </form>
+            </div>
+            </div>
+        </div>
     </div>
 {% endblock %}

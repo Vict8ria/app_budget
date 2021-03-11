@@ -11,3 +11,5 @@ TRANSACTION_TYPES = (
     ('transport', 'transport'),
     ('travel', 'travel'),
 )
+
+EMAIL_ADMIN = 'admin@admin.com'

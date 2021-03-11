@@ -1,18 +1,27 @@
-{% extends "layout.html" %}
+{% extends "base.html" %}
 {% block title %} Contact us {% endblock %}
 
 {% block content %}
-    <div class="form">
-        <h2>Contact us</h2>
-
-        {% if sent %}
-            {% include "contact_us/thank_you.html" %}
-        {% else %}
-            <form action="." method="post">
-                {{ form.as_p }}
-                {% csrf_token %}
-                <input type="submit" value="Submit">
-            </form>
-        {% endif %}
+    <div class="landing">
+        <div class="container">
+            <div class="row">
+                 {% if sent %}
+                    <div class="col push-l3 l6">
+                        {% include "contact_us/thank_you.html" %}
+                    </div>
+                {% else %}
+                    <div class="col push-l4 l4">
+                        <h4 class="center mb-5">Contact us</h4>
+                        <form action="." method="post">
+                            {{ form.as_p }}
+                            {% csrf_token %}
+                            <div class="d-flex justify-center">
+                                <input class="cyan lighten-2 btn" type="submit" value="Submit">
+                            </div>
+                        </form>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
     </div>
 {% endblock %}

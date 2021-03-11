@@ -1,6 +1,7 @@
 from django import forms
-from django.contrib.auth.models import User
 from phonenumber_field.formfields import PhoneNumberField
+from django.contrib.auth.models import User
+
 from . import models
 from . import utils
 from . import constants
@@ -30,16 +31,10 @@ class ContactUsForm(forms.Form):
     name = forms.CharField(required=True)
     email = forms.EmailField(required=True)
     phone = PhoneNumberField(required=True, widget=forms.TextInput())
-    message = forms.CharField(widget=forms.Textarea, max_length=2000)
+    message = forms.CharField(widget=forms.Textarea(attrs={'class': 'materialize-textarea'}), max_length=2000)
 
 
-class CreateProjectForm(forms.ModelForm):
-    class Meta:
-        model = models.Project
-        fields = ('name',)
-
-
-class EditProjectForm(forms.ModelForm):
+class ProjectForm(forms.ModelForm):
     class Meta:
         model = models.Project
         fields = ('name',)
